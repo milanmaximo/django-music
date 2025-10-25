@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class Album(models.Model):
-    user = models.ForeignKey(User, default=1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     artist = models.CharField(max_length=250)
     album_title = models.CharField(max_length=500)
     genre = models.CharField(max_length=100)
@@ -13,6 +13,9 @@ class Album(models.Model):
 
     def __str__(self):
         return self.album_title + ' - ' + self.artist
+
+    class Meta:
+        ordering = ['-id']
 
 
 class Song(models.Model):
@@ -24,14 +27,15 @@ class Song(models.Model):
     def __str__(self):
         return self.song_title
 
+    class Meta:
+        ordering = ['song_title']
+
 class Post(models.Model):
-    author = models.ForeignKey('auth.User')
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     text = models.TextField()
-    created_date = models.DateTimeField(
-            default=timezone.now)
-    published_date = models.DateTimeField(
-            blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
 
     def publish(self):
         self.published_date = timezone.now()
@@ -39,6 +43,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['-created_date']
 
 
 class Stock(models.Model):
